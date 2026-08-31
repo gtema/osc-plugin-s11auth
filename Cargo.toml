@@ -1,0 +1,25 @@
+[workspace]
+
+[package]
+name = "s11auth-wasm-plugin"
+description = "s11auth out-of-tree wasm auth plugin (OIDC-via-Keycloak SSO against Keystone), ABI v1"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+extism-pdk = "1.4"
+serde_json = "1"
+url = "2"
+base64 = "0.22"
+
+[dev-dependencies]
+extism = "^1.30"
+httpmock = "^0.8"
+reqwest = { version = "^0.13", default-features = false, features = ["rustls", "blocking", "json"] }
+serde = { version = "^1.0", features = ["derive"] }
+ring = "^0.17"
