@@ -41,7 +41,7 @@ jobs:
           targets: wasm32-unknown-unknown
 
       - name: Install cargo-nextest
-        uses: taiki-e/install-action@9e1e5806d4a4822de933115878265be9aaa786d9 # v2.82.2
+        uses: taiki-e/install-action@83ac0ad63c0167e6f06796fab0fce28db1bf3db0 # v2.87.22
         with:
           tool: cargo-nextest
 
