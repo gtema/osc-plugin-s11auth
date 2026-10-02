@@ -1,0 +1,54 @@
+# s11auth wasm plugin
+
+Out-of-tree `sso`-flavor wasm auth plugin implementing `s11auth` (OIDC-via-Keycloak
+browser auth against Keystone), conforming to `gtema/openstack`'s plugin ABI v1.
+Drop-in replacement for the Python `s11auth` keystoneauth1 plugin.
+
+## Configuration
+
+Set these in the cloud config `auth` block (`values`) the host passes through
+to the plugin:
+
+| Field           | Default                                                                    | Purpose                                                                   |
+|-----------------|----------------------------------------------------------------------------|---------------------------------------------------------------------------|
+| `oidc_endpoint` | `https://idp.apis.syseleven.de/realms/application/protocol/openid-connect` | OIDC issuer base endpoint (Keycloak realm's `openid-connect` root).       |
+| `client_id`     | `s11-user`                                                                 | OIDC client id registered with the IdP.                                   |
+| `callback_port` | none (ephemeral port)                                                      | Fixed local callback port; must match the IdP's `redirect_uri` allowlist. |
+
+Note: `callback_port` intentionally diverges from the design spec's
+`redirect_port` field name — this is a spec bug; the plugin matches the
+host's actual `values.get("callback_port")` lookup.
+
+Note: on success, this plugin returns a real `auth_info` (the parsed Keystone
+`/auth/tokens` response body) rather than the spec's literal `null` — the
+host caches the session from `auth_info`, so a literal `null` would make it
+drop the token immediately and force a full browser SSO round trip on every
+`osc` invocation.
+
+Note: the Keystone auth request body passes through the full `scope` value
+received in the build request verbatim, rather than only `scope.project.id`
+as the spec's example shows — this preserves scopes like project-by-name
+with a domain, domain scope, and system scope, which the narrower spec
+example would silently drop.
+
+## Token validation
+
+The plugin only checks the `id_token`'s `nonce` claim. It does not verify the
+signature, `iss`, `aud` or `exp`; the `id_token` is handed to Keystone, which
+is responsible for validating it.
+
+## Build
+
+    cargo build --target wasm32-unknown-unknown --release
+
+## Test
+
+Unit tests run natively:
+
+    cargo test --lib
+
+Integration tests load the compiled `.wasm` into a real `extism::Plugin`, so build
+it first (CI must run the build step before the tests):
+
+    cargo build --target wasm32-unknown-unknown --release
+    cargo test --test sso_round_trip
