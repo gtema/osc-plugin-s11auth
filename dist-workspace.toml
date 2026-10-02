@@ -1,0 +1,34 @@
+[workspace]
+# The plugin is a wasm `cdylib`, which dist cannot release as a cargo package
+# (it only knows about crates with `[[bin]]` targets). It is described as a
+# "generic" package in dist.toml instead.
+members = ["dist:."]
+
+# Config for 'dist'
+[dist]
+# The preferred dist version to use in CI (Cargo.toml SemVer syntax)
+# Skip checking whether the specified configuration files are up to date
+allow-dirty = ["ci"]
+cargo-dist-version = "0.32.0"
+# CI backends to support
+ci = "github"
+# The wasm artifact is platform independent. It is built once, on Linux.
+targets = ["x86_64-unknown-linux-gnu"]
+# No installers: the plugin is installed with `osc plugin install`
+installers = []
+# Raw .wasm (what the plugin registry points `download_url` at), uploaded
+# next to the archive and attested together with it.
+extra-artifacts = [
+  { artifacts = ["s11auth_wasm_plugin.wasm"], build = ["./build-wasm.sh"] },
+]
+# Which actions to run on pull requests
+pr-run-mode = "plan"
+# release-plz creates the GitHub release (and tag); dist uploads to it
+create-release = false
+# Whether to enable GitHub Attestations
+github-attestations = true
+github-build-setup = "../parts/build-setup.yml"
+
+[dist.github-custom-runners]
+global = "ubuntu-latest"
+x86_64-unknown-linux-gnu = "ubuntu-latest"
