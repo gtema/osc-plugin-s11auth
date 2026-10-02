@@ -52,3 +52,34 @@ it first (CI must run the build step before the tests):
 
     cargo build --target wasm32-unknown-unknown --release
     cargo test --test sso_round_trip
+
+## Contributing
+
+Install [pre-commit](https://pre-commit.com) and enable the hooks once per
+clone:
+
+    pre-commit install
+
+On every commit it checks `cargo fmt` and lints the commit message with
+[committed](https://github.com/crate-ci/committed). CI repeats both checks, and
+`committed` also runs over every commit of a pull request.
+
+### Commit messages
+
+Commits follow [Conventional Commits](https://www.conventionalcommits.org):
+
+    <type>(<optional scope>): <summary>
+
+    <optional body explaining why, wrapped at 72 characters>
+
+- `type` is one of `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`,
+  `build`, `ci`, `chore`, `revert`.
+- The summary is imperative ("add", not "added"), has no trailing period and
+  stays within 50 characters where possible (72 at most).
+- Mark breaking changes with `!` after the type/scope (`feat(auth)!: ...`) and
+  describe them in a `BREAKING CHANGE:` footer.
+- Merge commits are not allowed: rebase the branch on `main` instead. PRs are
+  squash-merged, so the PR title must follow the same format.
+
+`release-plz` derives the next version and the changelog from these messages:
+`fix` gives a patch release, `feat` a minor one, a breaking change a major one.
