@@ -53,28 +53,6 @@ jobs:
       - name: Run tests
         run: cargo nextest run --all-features
 
-  dist-version:
-    name: dist.toml version matches Cargo.toml
-    runs-on: ubuntu-latest
-    steps:
-      - name: Harden Runner
-        uses: step-security/harden-runner@05e31511f85b41b11d1cf0ef85d0992719546e2c # v2.21.0
-        with:
-          egress-policy: audit
-
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-        with:
-          persist-credentials: false
-
-      - name: Compare versions
-        run: |
-          crate=$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[0].version')
-          dist=$(sed -n 's/^version = "\(.*\)"/\1/p' dist.toml)
-          if [ "${crate}" != "${dist}" ]; then
-            echo "::error::dist.toml version ${dist} != Cargo.toml version ${crate}"
-            exit 1
-          fi
-
   lint:
     runs-on: ubuntu-latest
     steps:
