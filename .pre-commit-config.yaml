@@ -1,0 +1,18 @@
+---
+# Enable both hook types once with: pre-commit install
+default_install_hook_types: [pre-commit, commit-msg]
+repos:
+  - repo: https://github.com/crate-ci/committed
+    rev: v1.1.7
+    hooks:
+      - id: committed
+  - repo: local
+    hooks:
+      - id: cargo-fmt
+        name: cargo fmt
+        entry: cargo fmt
+        description: Check rust formatting with cargo fmt
+        args: ["--", "--check", "--color", "always"]
+        language: system
+        types: [rust]
+        pass_filenames: false
