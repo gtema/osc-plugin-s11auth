@@ -1,9 +1,0 @@
-# Generic dist package for the wasm plugin. `version` must equal the version
-# in Cargo.toml; the release-plz workflow keeps them in sync and CI checks it.
-[package]
-name = "s11auth-wasm-plugin"
-version = "0.1.0"
-repository = "https://github.com/gtema/osc-auth-s11"
-# dist treats the built wasm file as the "binary" of this package
-binaries = ["s11auth_wasm_plugin.wasm"]
-build-command = ["./build-wasm.sh"]

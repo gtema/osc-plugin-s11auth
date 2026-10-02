@@ -2,7 +2,7 @@
 allow_dirty = true
 # The crate is not published to crates.io (`publish = false`); release-plz
 # only bumps the version, maintains the changelog and creates the tag and
-# GitHub release. cargo-dist then builds, attests and uploads the .wasm.
+# GitHub release. release.yml then builds, attests and uploads the .wasm.
 git_release_enable = true
 git_release_latest = true
 git_tag_name = "v{{ version }}"
