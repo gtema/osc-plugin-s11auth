@@ -18,7 +18,7 @@ base64 = "0.23"
 
 [dev-dependencies]
 extism = "^1.30"
-httpmock = "^0.8"
+httpmock = "^0.9"
 reqwest = { version = "^0.13", default-features = false, features = ["rustls", "blocking", "json"] }
 serde = { version = "^1.0", features = ["derive"] }
 ring = "^0.17"
